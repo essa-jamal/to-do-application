@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./partials/head') %>
+  <body>
+    <%- include('./partials/nav') %>
+    <ul id="itemcontainer" class="collection with-header container">
+      <% if(items.length){ %>
+      <li class="collection-header"><h4>Items ..</h4></li>
+      <% items.forEach(item=>{ %>
+
+      <li class="collection-item">
+        <div>
+          <a href="/items/<%= item.id %>">
+            <%= item.name %> $<%= item.price %></a
+          >
+          <a href="#" class="secondary-content"
+            ><i class="material-icons" id="deletebtn" data-id="<%= item.id %>"
+              >delete</i
+            ></a
+          >
+          <a href="#!" class="secondary-content"
+            ><i
+              class="material-icons modal-trigger"
+              id="editbtn"
+              href="#edit_item_modal"
+              data-id="<%= item.id %>"
+              >edit</i
+            ></a
+          >
+        </div>
+      </li>
+
+      <% }); } else{ %>
+      <li class="collection-item"><div>There is no items</div></li>
+      <% } %>
+    </ul>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <!-- Modal Structure -->
+    <div id="edit_item_modal" class="modal">
+      <div class="modal-content">
+        <h4>Edit Form</h4>
+
+        <form action="" id="edit_form">
+          <input type="text" name="name" placeholder="item name" />
+          <input type="number" name="price" placeholder="item price" />
+          <button class="btn" id="btn_update">Update</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      var updateId;
+      document.addEventListener("DOMContentLoaded", function () {
+        var elems = document.querySelectorAll(".modal");
+        var instances = M.Modal.init(elems);
+      });
+      //const edit_form=document.getElementById('edit_form')
+      edit_form.onsubmit = async (e) => {
+        e.preventDefault();
+        let data = await new FormData(edit_form);
+        /*for(var pair of data.entries()){
+          console.log(pair[0]+','+pair[1])
+        }*/
+        let response = await fetch(`/items/${updateId}`, {
+          method: "PUT",
+          body: new URLSearchParams(data),
+          headers: new Headers({
+            "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+          }),
+        });
+        let result = await response.json();
+        edit_form.reset();
+        window.location.reload();
+      };
+
+      const itemcontainer = document.getElementById("itemcontainer");
+      itemcontainer.onclick = (e) => {
+        
+        //console.log(e.target.textContent);
+        if (e.target.textContent === "edit") {
+          updateId = e.target.getAttribute("data-id");
+         // console.log(updateId);
+        }
+        if(e.target.textContent==='delete'){
+       updateId=e.target.getAttribute('data-id')
+       console.log(updateId)
+       fetch(`/items/${updateId}`, {
+        method: "DELETE",
+      })
+        .then((res) => res.json())
+        .then((data) => (window.location.href = data.redirect))
+        .catch((err) => console.log(err));
+     }
+      };
+    </script>
+  </body>
+</html>

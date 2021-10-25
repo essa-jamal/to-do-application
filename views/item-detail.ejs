@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('./partials/head') %>
+<body>
+    <%- include('./partials/nav') %>
+    <div class="row container" >
+        <div class="col s12 m6">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">Item Name: <%= item.name %></span>
+              <p>Price: <%= item.price %>$</p>
+              <p>Inserted: <%= createdate %> </p>
+            </div>
+            <div class="card-action">
+              <a href="#" id='deletebtn' data-id="<%= item.id %>">Delete</a>
+              <a href="/">Return to Items</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    <%- include('./partials/footer') %>
+</body>
+</html>
